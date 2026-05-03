@@ -1,0 +1,35 @@
+#!/usr/bin/zsh
+
+auto_commit_if_dirty() {
+  # 确保在 git 仓库中
+  git rev-parse --is-inside-work-tree &>/dev/null || return 0
+  # 检查是否有变更
+  git diff-index --quiet HEAD -- || return 0
+  # 有变化 → 自动添加
+  git add -A
+  # 自动提交
+  git commit -m "auto commit: $(date '+%Y-%m-%d %H:%M:%S')" && {
+    git push && {
+      print "Pushing up to remote successfully."
+    } || {
+      print "Failed to push up to remote"
+      return 1
+    }
+  } || {
+    print "Failed to auto commit."
+    return 1
+  }
+}
+
+auto_backup_to_onedrive() {
+  rclone sync ${0:A:h} OneDrive:Music --progress --exclude ".git/*" && {
+    print "Backing up to OneDrive successfully."
+  } || {
+    print "Failed to backup to OneDrive."
+    return 1
+  }
+}
+
+auto_commit_if_dirty
+auto_backup_to_onedrive
+# vim: ft=zsh
