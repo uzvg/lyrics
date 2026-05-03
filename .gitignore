@@ -3,3 +3,4 @@
 !*.lrc
 !.gitignore
 !sync
+!.rclone-ignore
