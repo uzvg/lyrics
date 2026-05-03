@@ -22,7 +22,12 @@ auto_commit_if_dirty() {
 }
 
 auto_backup_to_onedrive() {
-  rclone sync $PWD OneDrive:Music --progress --exclude '.git/*' --delete-excluded && {
+  rclone sync $PWD OneDrive:Music \
+    --progress \
+    --exclude '.git/*' \
+    --exclude 'sync' \
+    --exclude '.gitignore' \
+    --delete-excluded && {
     print "Backing up to OneDrive successfully."
   } || {
     print "Failed to backup to OneDrive."
